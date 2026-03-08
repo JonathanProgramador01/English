@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamal Quiz & Interview Report</title>
+    <!-- Tailwind CSS para los estilos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React y Babel para que el navegador entienda JSX -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Mock de iconos usando SVGs de Lucide para que funcionen sin librerías pesadas
+        const Icon = ({ name, size = 20, className = "" }) => {
+            return <i data-lucide={name} className={className} style={{width: size, height: size}}></i>;
+        };
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('quiz');
+            const [step, setStep] = useState('home'); 
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [answers, setAnswers] = useState([]);
+            const [result, setResult] = useState(null);
+            const [revealIndex, setRevealIndex] = useState(null);
+
+            const questions = [
+                { id: 1, text: "It’s Friday night, you:", options: [{ label: "Plan a chill hangout but make it stylish", value: "A" }, { label: "Start something spontaneous and just go with it", value: "B" }, { label: "Prefer something romantic or aesthetic", value: "C" }, { label: "Want a full-on party, no drama", value: "D" }] },
+                { id: 2, text: "Your social media vibe is:", options: [{ label: "Mysterious but classy", value: "A" }, { label: "Natural and fun", value: "B" }, { label: "Cute and creative", value: "C" }, { label: "Straightforward and unfiltered", value: "D" }] },
+                { id: 3, text: "In your friend group you are:", options: [{ label: "The advisor", value: "A" }, { label: "The easygoing one", value: "B" }, { label: "The sweetest one", value: "C" }, { label: "The brutally honest one", value: "D" }] },
+                { id: 4, text: "Your ideal playlist includes:", options: [{ label: "Emotional pop or dramatic vibes", value: "A" }, { label: "Chill indie or alternative", value: "B" }, { label: "Romantic pop", value: "C" }, { label: "Reggaeton or hype music", value: "D" }] },
+                { id: 5, text: "When you like someone, you:", options: [{ label: "Take it slow but steady", value: "A" }, { label: "Play a little hard to get", value: "B" }, { label: "Catch feelings fast", value: "C" }, { label: "Go straight to the point", value: "D" }] },
+                { id: 6, text: "Your biggest personality trait is:", options: [{ label: "Passionate", value: "A" }, { label: "Go-with-the-flow", value: "B" }, { label: "Loving", value: "C" }, { label: "Bold", value: "D" }] }
+            ];
+
+            const resultsData = {
+                A: { title: "Mole Tamal", description: "You’re intense, deep, and full of character. Not everyone gets you, but those who do stick around. You’re traditional with power.", color: "bg-amber-900", textColor: "text-amber-100", emoji: "☕" },
+                B: { title: "Green Tamal", description: "Relaxed, adaptable, and good vibes only. You know how to go with the flow. You’re classic but never boring.", color: "bg-emerald-600", textColor: "text-emerald-50", emoji: "🍃" },
+                C: { title: "Sweet Tamal", description: "You’re pure sweetness (maybe a little dramatic). You love connecting and making others feel special. Main-character energy for sure.", color: "bg-pink-400", textColor: "text-pink-50", emoji: "💖" },
+                D: { title: "Rajas Tamal", description: "Authentic, direct, and a little spicy. You don’t do basic. You’ve got that unforgettable spark.", color: "bg-orange-500", textColor: "text-orange-50", emoji: "🔥" }
+            };
+
+            const interviewReport = [
+                { question: "How long have you been in this area?", erickSaid: "I moved to this city four years ago, and I have been working in this specific administrative area for over three years, so I know the local market perfectly.", reported: "Erick told us that he had moved to that city four years before, and he added that he had been working in that specific administrative area for over three years." },
+                { question: "Have you managed schedules in other companies?", erickSaid: "Yes, in my previous job at a logistics firm, I managed complex schedules for a team of 30 employees while ensuring there were no overlaps.", reported: "He said that in his previous job he had managed complex schedules for a team of 30 employees, ensuring that there were no overlaps." },
+                { question: "What is your level of English?", erickSaid: "I consider my English level to be intermediate-advanced because I usually communicate with international clients, though I am still studying to improve my vocabulary.", reported: "He explained that he considered his English level to be intermediate-advanced and mentioned that he was still studying to improve his vocabulary." },
+                { question: "Do you wait for indications or do you take decisions?", erickSaid: "I always value my boss's instructions, but if there is an emergency, I don't wait for indications; I take my own decisions to keep the workflow moving.", reported: "Erick stated that he always valued instructions, but he added that if there was an emergency, he didn't wait; he took his own decisions." },
+                { question: "What does honesty mean to you?", erickSaid: "To me, honesty is the foundation of every professional relationship, so I always tell the truth about the budget even if the numbers are not looking good.", reported: "He explained that honesty was the foundation of every relationship and that he always told the truth about the budget even if the numbers were not looking good." },
+                { question: "How do you manage office supplies?", erickSaid: "I use a customized digital system to track every single item in the office, and I personally make sure that we never run out of materials during busy months.", reported: "He mentioned that he used a customized digital system to track every item and that he personally made sure they never ran out of materials." }
+            ];
+
+            const handleAnswer = (value) => {
+                const newAnswers = [...answers, value];
+                setAnswers(newAnswers);
+                if (currentQuestion < questions.length - 1) {
+                    setCurrentQuestion(currentQuestion + 1);
+                } else {
+                    const counts = newAnswers.reduce((acc, val) => { acc[val] = (acc[val] || 0) + 1; return acc; }, {});
+                    const winner = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
+                    setResult(resultsData[winner]);
+                    setStep('result');
+                }
+            };
+
+            React.useEffect(() => {
+                lucide.createIcons();
+            }, [activeTab, step, revealIndex]);
+
+            return (
+                <div className="min-h-screen flex flex-col items-center py-10 px-4">
+                    <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-gray-200 mb-8 w-full max-w-md">
+                        <button onClick={() => setActiveTab('quiz')} className={`flex-1 py-3 rounded-xl font-bold transition-all ${activeTab === 'quiz' ? 'bg-orange-500 text-white shadow-md' : 'text-gray-400'}`}>Tamal Quiz</button>
+                        <button onClick={() => setActiveTab('english')} className={`flex-1 py-3 rounded-xl font-bold transition-all ${activeTab === 'english' ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-400'}`}>Interview Report</button>
+                    </div>
+
+                    {activeTab === 'quiz' ? (
+                        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+                            <div className="h-2 bg-gradient-to-r from-orange-400 to-red-500" />
+                            {step === 'home' && (
+                                <div className="p-8 text-center space-y-6">
+                                    <div className="bg-orange-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4 text-5xl">🫔</div>
+                                    <h1 className="text-3xl font-black text-orange-600 tracking-tight uppercase">Which Tamal are you?</h1>
+                                    <button onClick={() => setStep('quiz')} className="w-full bg-orange-500 text-white font-bold py-4 rounded-2xl shadow-lg">Start Quiz</button>
+                                </div>
+                            )}
+                            {step === 'quiz' && (
+                                <div className="p-8 space-y-6">
+                                    <h2 className="text-xl font-bold text-gray-800 leading-tight">{questions[currentQuestion].text}</h2>
+                                    <div className="space-y-3">
+                                        {questions[currentQuestion].options.map((opt, i) => (
+                                            <button key={i} onClick={() => handleAnswer(opt.value)} className="w-full text-left p-4 rounded-xl border-2 border-gray-50 hover:border-orange-200 hover:bg-orange-50 transition-all font-medium text-gray-700">{opt.label}</button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                            {step === 'result' && result && (
+                                <div className="animate-in fade-in duration-700">
+                                    <div className={`${result.color} p-10 text-center text-white`}>
+                                        <div className="text-5xl mb-4">{result.emoji}</div>
+                                        <h2 className="text-4xl font-black">{result.title}</h2>
+                                    </div>
+                                    <div className="p-8 space-y-6">
+                                        <p className="text-gray-600 text-lg leading-relaxed">{result.description}</p>
+                                        <button onClick={() => {setStep('home'); setCurrentQuestion(0); setAnswers([]);}} className="w-full border-2 border-gray-100 py-4 rounded-2xl text-gray-400 font-bold">Try Again</button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="w-full max-w-3xl space-y-8">
+                            <div className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
+                                <div className="bg-indigo-700 p-8 text-white">
+                                    <h2 className="text-2xl font-black mb-2">Erick's Professional Report</h2>
+                                    <p className="text-indigo-200 text-sm">Summary of his answers in Reported Speech.</p>
+                                </div>
+                                <div className="p-6 space-y-6">
+                                    {interviewReport.map((item, idx) => (
+                                        <div key={idx} className="border-b border-gray-100 last:border-0 pb-6">
+                                            <div className="flex items-start justify-between gap-4 mb-4">
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Question:</span>
+                                                    <p className="text-gray-700 font-bold italic">"{item.question}"</p>
+                                                </div>
+                                                <button onClick={() => setRevealIndex(revealIndex === idx ? null : idx)} className="shrink-0 px-4 py-2 rounded-xl text-xs font-bold bg-gray-50 text-gray-500">{revealIndex === idx ? 'HIDE' : 'VIEW REPORT'}</button>
+                                            </div>
+                                            {revealIndex === idx && (
+                                                <div className="space-y-4">
+                                                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200"><p className="text-sm text-slate-600 italic">"{item.erickSaid}"</p></div>
+                                                    <div className="bg-indigo-50 p-4 rounded-2xl border border-indigo-100"><p className="text-sm text-indigo-900 font-bold">{item.reported}</p></div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="bg-emerald-600 p-8 rounded-3xl text-white shadow-xl">
+                                <h3 className="text-2xl font-black mb-2">Hiring Decision</h3>
+                                <p className="text-emerald-50 leading-relaxed">Erick's interview was impressive. He explained his experience and values clearly, so we have officially offered him the position.</p>
+                            </div>
+                        </div>
+                    )}
+                    <footer className="mt-12 text-gray-400 text-xs font-medium uppercase text-center">Interview Practice &bull; 2024</footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
