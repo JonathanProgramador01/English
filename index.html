@@ -3,30 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tamal Quiz & Interview Report</title>
-    <!-- Tailwind CSS para los estilos -->
+    <title>Professional Interview Report & Personality Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React y Babel para que el navegador entienda JSX -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary-orange: #f97316;
+            --primary-indigo: #4f46e5;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f8fafc;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .animated-bg {
+            background: linear-gradient(-45deg, #fff7ed, #eff6ff, #f0fdf4);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .transition-all {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
     </style>
 </head>
-<body class="bg-slate-50">
+<body class="animated-bg min-h-screen">
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState } = React;
-
-        // Mock de iconos usando SVGs de Lucide para que funcionen sin librerías pesadas
-        const Icon = ({ name, size = 20, className = "" }) => {
-            return <i data-lucide={name} className={className} style={{width: size, height: size}}></i>;
-        };
+        const { useState, useEffect } = React;
 
         const App = () => {
             const [activeTab, setActiveTab] = useState('quiz');
@@ -35,6 +58,10 @@
             const [answers, setAnswers] = useState([]);
             const [result, setResult] = useState(null);
             const [revealIndex, setRevealIndex] = useState(null);
+
+            useEffect(() => {
+                if (window.lucide) window.lucide.createIcons();
+            }, [activeTab, step, revealIndex]);
 
             const questions = [
                 { id: 1, text: "It’s Friday night, you:", options: [{ label: "Plan a chill hangout but make it stylish", value: "A" }, { label: "Start something spontaneous and just go with it", value: "B" }, { label: "Prefer something romantic or aesthetic", value: "C" }, { label: "Want a full-on party, no drama", value: "D" }] },
@@ -46,19 +73,19 @@
             ];
 
             const resultsData = {
-                A: { title: "Mole Tamal", description: "You’re intense, deep, and full of character. Not everyone gets you, but those who do stick around. You’re traditional with power.", color: "bg-amber-900", textColor: "text-amber-100", emoji: "☕" },
-                B: { title: "Green Tamal", description: "Relaxed, adaptable, and good vibes only. You know how to go with the flow. You’re classic but never boring.", color: "bg-emerald-600", textColor: "text-emerald-50", emoji: "🍃" },
-                C: { title: "Sweet Tamal", description: "You’re pure sweetness (maybe a little dramatic). You love connecting and making others feel special. Main-character energy for sure.", color: "bg-pink-400", textColor: "text-pink-50", emoji: "💖" },
-                D: { title: "Rajas Tamal", description: "Authentic, direct, and a little spicy. You don’t do basic. You’ve got that unforgettable spark.", color: "bg-orange-500", textColor: "text-orange-50", emoji: "🔥" }
+                A: { title: "Mole Tamal", description: "You are intense, sophisticated, and filled with a complex character that commands respect. Like the classic Mole, you have layers that only true connoisseurs appreciate. You value tradition but bring your own unique power to every situation.", color: "from-amber-800 to-amber-950", textColor: "text-amber-50", emoji: "🫔", icon: "coffee" },
+                B: { title: "Green Tamal", description: "Relaxed, adaptable, and a source of constant good vibes. You are the classic choice that never fails to please. You know how to balance energy and peace perfectly, moving through life with a natural elegance that others admire.", color: "from-emerald-600 to-emerald-800", textColor: "text-emerald-50", emoji: "🍃", icon: "leaf" },
+                C: { title: "Sweet Tamal", description: "You are pure warmth and affection, with a touch of dramatic flair that makes you the star of the show. You love deeply and have a unique 'main-character' energy that lights up every room you enter.", color: "from-pink-400 to-rose-600", textColor: "text-pink-50", emoji: "💖", icon: "heart" },
+                D: { title: "Rajas Tamal", description: "Authentic, direct, and filled with a spicy spark that makes you unforgettable. You don't settle for basic and always speak your truth. Your presence is a bold statement, and you leave a lasting impression on everyone you meet.", color: "from-orange-500 to-red-700", textColor: "text-orange-50", emoji: "🔥", icon: "zap" }
             };
 
             const interviewReport = [
-                { question: "How long have you been in this area?", erickSaid: "I moved to this city four years ago, and I have been working in this specific administrative area for over three years, so I know the local market perfectly.", reported: "Erick told us that he had moved to that city four years before, and he added that he had been working in that specific administrative area for over three years." },
-                { question: "Have you managed schedules in other companies?", erickSaid: "Yes, in my previous job at a logistics firm, I managed complex schedules for a team of 30 employees while ensuring there were no overlaps.", reported: "He said that in his previous job he had managed complex schedules for a team of 30 employees, ensuring that there were no overlaps." },
-                { question: "What is your level of English?", erickSaid: "I consider my English level to be intermediate-advanced because I usually communicate with international clients, though I am still studying to improve my vocabulary.", reported: "He explained that he considered his English level to be intermediate-advanced and mentioned that he was still studying to improve his vocabulary." },
-                { question: "Do you wait for indications or do you take decisions?", erickSaid: "I always value my boss's instructions, but if there is an emergency, I don't wait for indications; I take my own decisions to keep the workflow moving.", reported: "Erick stated that he always valued instructions, but he added that if there was an emergency, he didn't wait; he took his own decisions." },
-                { question: "What does honesty mean to you?", erickSaid: "To me, honesty is the foundation of every professional relationship, so I always tell the truth about the budget even if the numbers are not looking good.", reported: "He explained that honesty was the foundation of every relationship and that he always told the truth about the budget even if the numbers were not looking good." },
-                { question: "How do you manage office supplies?", erickSaid: "I use a customized digital system to track every single item in the office, and I personally make sure that we never run out of materials during busy months.", reported: "He mentioned that he used a customized digital system to track every item and that he personally made sure they never ran out of materials." }
+                { id: "001", question: "How long have you been in this area?", erickSaid: "I moved to this city four years ago, and I have been working in this specific administrative area for over three years, so I know the local market perfectly.", reported: "Erick stated that he had moved to that city four years before. He added that he had been working in that specific administrative area for over three years, which allowed him to understand the local market perfectly." },
+                { id: "002", question: "Have you managed schedules in other companies?", erickSaid: "Yes, in my previous job at a logistics firm, I managed complex schedules for a team of 30 employees while ensuring there were no overlaps.", reported: "The candidate confirmed that he had managed complex schedules for a team of 30 employees at a logistics firm, specifically mentioning his ability to avoid overlaps." },
+                { id: "003", question: "What is your level of English?", erickSaid: "I consider my English level to be intermediate-advanced because I usually communicate with international clients, though I am still studying to improve my vocabulary.", reported: "He explained that he considered his English level to be intermediate-advanced. He noted that he frequently communicated with international clients and was continuing his studies to expand his vocabulary." },
+                { id: "004", question: "Do you wait for indications or do you take decisions?", erickSaid: "I always value my boss's instructions, but if there is an emergency, I don't wait for indications; I take my own decisions to keep the workflow moving.", reported: "Erick clarified that while he valued instructions, he didn't wait for them during emergencies; instead, he took his own decisions to maintain the workflow." },
+                { id: "005", question: "What does honesty mean to you?", erickSaid: "To me, honesty is the foundation of every professional relationship, so I always tell the truth about the budget even if the numbers are not looking good.", reported: "He argued that honesty was the foundation of every professional relationship. He stressed that he always told the truth about the budget regardless of whether the numbers were positive." },
+                { id: "006", question: "How do you manage office supplies?", erickSaid: "I use a customized digital system to track every single item in the office, and I personally make sure that we never run out of materials during busy months.", reported: "The applicant mentioned that he used a customized digital system for tracking inventory and ensured they never ran out of materials during peak months." }
             ];
 
             const handleAnswer = (value) => {
@@ -74,84 +101,208 @@
                 }
             };
 
-            React.useEffect(() => {
-                lucide.createIcons();
-            }, [activeTab, step, revealIndex]);
-
             return (
-                <div className="min-h-screen flex flex-col items-center py-10 px-4">
-                    <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-gray-200 mb-8 w-full max-w-md">
-                        <button onClick={() => setActiveTab('quiz')} className={`flex-1 py-3 rounded-xl font-bold transition-all ${activeTab === 'quiz' ? 'bg-orange-500 text-white shadow-md' : 'text-gray-400'}`}>Tamal Quiz</button>
-                        <button onClick={() => setActiveTab('english')} className={`flex-1 py-3 rounded-xl font-bold transition-all ${activeTab === 'english' ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-400'}`}>Interview Report</button>
+                <div className="max-w-6xl mx-auto py-6 md:py-12 px-4 flex flex-col items-center">
+                    
+                    {/* Professional Navigation Header */}
+                    <div className="w-full max-w-2xl glass-card rounded-3xl p-2 mb-12 shadow-sm flex items-center justify-between">
+                        <button 
+                            onClick={() => setActiveTab('quiz')} 
+                            className={`flex-1 flex items-center justify-center gap-3 py-4 rounded-2xl font-bold transition-all ${activeTab === 'quiz' ? 'bg-orange-500 text-white shadow-lg scale-[1.02]' : 'text-slate-500 hover:bg-slate-50'}`}
+                        >
+                            <i data-lucide="award" className="w-5 h-5"></i>
+                            <span className="hidden sm:inline">Personality Quiz</span>
+                            <span className="sm:hidden">Quiz</span>
+                        </button>
+                        <button 
+                            onClick={() => setActiveTab('english')} 
+                            className={`flex-1 flex items-center justify-center gap-3 py-4 rounded-2xl font-bold transition-all ${activeTab === 'english' ? 'bg-indigo-600 text-white shadow-lg scale-[1.02]' : 'text-slate-500 hover:bg-slate-50'}`}
+                        >
+                            <i data-lucide="file-text" className="w-5 h-5"></i>
+                            <span className="hidden sm:inline">Professional Report</span>
+                            <span className="sm:hidden">Report</span>
+                        </button>
                     </div>
 
                     {activeTab === 'quiz' ? (
-                        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-                            <div className="h-2 bg-gradient-to-r from-orange-400 to-red-500" />
+                        <div className="w-full max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
                             {step === 'home' && (
-                                <div className="p-8 text-center space-y-6">
-                                    <div className="bg-orange-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4 text-5xl">🫔</div>
-                                    <h1 className="text-3xl font-black text-orange-600 tracking-tight uppercase">Which Tamal are you?</h1>
-                                    <button onClick={() => setStep('quiz')} className="w-full bg-orange-500 text-white font-bold py-4 rounded-2xl shadow-lg">Start Quiz</button>
+                                <div className="glass-card rounded-[2.5rem] p-12 text-center shadow-xl border-none">
+                                    <div className="relative inline-block mb-8">
+                                        <div className="absolute inset-0 bg-orange-400 blur-2xl opacity-20 animate-pulse"></div>
+                                        <div className="relative bg-orange-50 w-32 h-32 rounded-full flex items-center justify-center mx-auto text-6xl shadow-inner border border-orange-100">
+                                            🫔
+                                        </div>
+                                    </div>
+                                    <h1 className="text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
+                                        Which <span className="text-orange-500 italic">Tamal</span> are you?
+                                    </h1>
+                                    <p className="text-slate-500 text-lg mb-10 max-w-sm mx-auto leading-relaxed">
+                                        Discover your professional archetype through the vibrant lens of traditional Mexican flavors.
+                                    </p>
+                                    <button 
+                                        onClick={() => setStep('quiz')} 
+                                        className="group w-full bg-slate-900 text-white font-bold py-5 rounded-2xl shadow-xl hover:bg-orange-600 transition-all flex items-center justify-center gap-3 text-lg"
+                                    >
+                                        Begin Evaluation
+                                        <i data-lucide="arrow-right" className="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                                    </button>
                                 </div>
                             )}
+
                             {step === 'quiz' && (
-                                <div className="p-8 space-y-6">
-                                    <h2 className="text-xl font-bold text-gray-800 leading-tight">{questions[currentQuestion].text}</h2>
-                                    <div className="space-y-3">
+                                <div className="glass-card rounded-[2.5rem] p-10 shadow-xl border-none">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <span className="px-4 py-1.5 bg-orange-100 text-orange-600 rounded-full text-xs font-bold uppercase tracking-widest">
+                                            Phase {currentQuestion + 1}
+                                        </span>
+                                        <div className="text-right">
+                                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Progress</p>
+                                            <div className="w-32 bg-slate-100 h-2 rounded-full overflow-hidden">
+                                                <div className="bg-orange-500 h-full transition-all duration-500" style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h2 className="text-3xl font-bold text-slate-800 mb-8 leading-tight">
+                                        {questions[currentQuestion].text}
+                                    </h2>
+                                    <div className="grid gap-4">
                                         {questions[currentQuestion].options.map((opt, i) => (
-                                            <button key={i} onClick={() => handleAnswer(opt.value)} className="w-full text-left p-4 rounded-xl border-2 border-gray-50 hover:border-orange-200 hover:bg-orange-50 transition-all font-medium text-gray-700">{opt.label}</button>
+                                            <button 
+                                                key={i} 
+                                                onClick={() => handleAnswer(opt.value)} 
+                                                className="w-full text-left p-6 rounded-2xl border-2 border-slate-50 bg-white hover:border-orange-500 hover:shadow-lg transition-all flex items-center justify-between group"
+                                            >
+                                                <span className="text-lg font-semibold text-slate-700 group-hover:text-orange-700">{opt.label}</span>
+                                                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-xs font-black text-slate-400 group-hover:bg-orange-500 group-hover:text-white transition-all">
+                                                    {opt.value}
+                                                </div>
+                                            </button>
                                         ))}
                                     </div>
                                 </div>
                             )}
+
                             {step === 'result' && result && (
-                                <div className="animate-in fade-in duration-700">
-                                    <div className={`${result.color} p-10 text-center text-white`}>
-                                        <div className="text-5xl mb-4">{result.emoji}</div>
-                                        <h2 className="text-4xl font-black">{result.title}</h2>
-                                    </div>
-                                    <div className="p-8 space-y-6">
-                                        <p className="text-gray-600 text-lg leading-relaxed">{result.description}</p>
-                                        <button onClick={() => {setStep('home'); setCurrentQuestion(0); setAnswers([]);}} className="w-full border-2 border-gray-100 py-4 rounded-2xl text-gray-400 font-bold">Try Again</button>
+                                <div className="animate-in fade-in zoom-in duration-700">
+                                    <div className={`rounded-[2.5rem] p-1 overflow-hidden shadow-2xl`}>
+                                        <div className={`bg-gradient-to-br ${result.color} p-12 text-center text-white rounded-[2.3rem]`}>
+                                            <div className="bg-white/10 backdrop-blur-md w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-white/20 shadow-lg text-5xl">
+                                                {result.emoji}
+                                            </div>
+                                            <h2 className="text-5xl font-black mb-2 tracking-tight">{result.title}</h2>
+                                            <p className="text-white/70 font-bold uppercase tracking-[0.3em] text-xs">Personality Archetype</p>
+                                        </div>
+                                        <div className="bg-white p-12 rounded-[2.3rem] -mt-6 relative z-10 space-y-8">
+                                            <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 italic text-slate-600 text-lg leading-relaxed text-center">
+                                                "{result.description}"
+                                            </div>
+                                            <button 
+                                                onClick={() => {setStep('home'); setCurrentQuestion(0); setAnswers([]);}} 
+                                                className="w-full py-5 rounded-2xl bg-slate-900 text-white font-bold hover:opacity-90 transition-all flex items-center justify-center gap-3 text-lg"
+                                            >
+                                                <i data-lucide="refresh-cw" className="w-5 h-5"></i>
+                                                Retake Evaluation
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             )}
                         </div>
                     ) : (
-                        <div className="w-full max-w-3xl space-y-8">
-                            <div className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
-                                <div className="bg-indigo-700 p-8 text-white">
-                                    <h2 className="text-2xl font-black mb-2">Erick's Professional Report</h2>
-                                    <p className="text-indigo-200 text-sm">Summary of his answers in Reported Speech.</p>
-                                </div>
-                                <div className="p-6 space-y-6">
-                                    {interviewReport.map((item, idx) => (
-                                        <div key={idx} className="border-b border-gray-100 last:border-0 pb-6">
-                                            <div className="flex items-start justify-between gap-4 mb-4">
-                                                <div>
-                                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Question:</span>
-                                                    <p className="text-gray-700 font-bold italic">"{item.question}"</p>
-                                                </div>
-                                                <button onClick={() => setRevealIndex(revealIndex === idx ? null : idx)} className="shrink-0 px-4 py-2 rounded-xl text-xs font-bold bg-gray-50 text-gray-500">{revealIndex === idx ? 'HIDE' : 'VIEW REPORT'}</button>
+                        <div className="w-full animate-in fade-in slide-in-from-right-4 duration-500">
+                            <div className="grid lg:grid-cols-12 gap-8 items-start">
+                                
+                                {/* Left Side: Sidebar Stats */}
+                                <div className="lg:col-span-4 space-y-6">
+                                    <div className="glass-card rounded-[2rem] p-8 shadow-sm">
+                                        <div className="flex items-center gap-4 mb-8">
+                                            <div className="bg-indigo-600 p-4 rounded-2xl text-white shadow-lg">
+                                                <i data-lucide="user" className="w-8 h-8"></i>
                                             </div>
+                                            <div>
+                                                <h2 className="text-2xl font-black text-slate-800">Erick J.</h2>
+                                                <p className="text-slate-400 font-bold text-xs uppercase tracking-widest leading-none mt-1">Senior Candidate</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="space-y-4">
+                                            <div className="p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
+                                                <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1">Status</p>
+                                                <div className="flex items-center justify-between">
+                                                    <span className="font-bold text-indigo-900">Recommended</span>
+                                                    <span className="flex h-3 w-3 rounded-full bg-emerald-500"></span>
+                                                </div>
+                                            </div>
+                                            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Company</p>
+                                                <span className="font-bold text-slate-700 italic">Admin Logistics Group</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-slate-900 rounded-[2rem] p-8 text-white shadow-xl relative overflow-hidden">
+                                        <i data-lucide="quote" className="absolute top-4 right-4 text-white/10 w-24 h-24"></i>
+                                        <h3 className="text-xl font-bold mb-4 relative z-10">HR Veredict</h3>
+                                        <p className="text-slate-300 text-sm leading-relaxed mb-6 relative z-10">
+                                            Erick demonstrated superior command of administrative logic. During the interview, he explained his history and values with high precision.
+                                        </p>
+                                        <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/10">
+                                            <i data-lucide="check-circle" className="text-emerald-400 w-5 h-5"></i>
+                                            <span className="text-xs font-bold uppercase tracking-widest">Officially Hired</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Right Side: Interview Cards */}
+                                <div className="lg:col-span-8 space-y-4">
+                                    <div className="flex items-center justify-between px-2 mb-2">
+                                        <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Full Dialogue Narrative</h3>
+                                        <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">6 Total Entries</span>
+                                    </div>
+                                    
+                                    {interviewReport.map((item, idx) => (
+                                        <div key={idx} className="glass-card rounded-3xl p-6 transition-all hover:shadow-md border-transparent hover:border-indigo-100">
+                                            <div className="flex items-center justify-between gap-4">
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <span className="text-[9px] font-black text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded uppercase tracking-tighter">Query #{item.id}</span>
+                                                        <span className="text-sm font-bold text-slate-800 leading-tight">"{item.question}"</span>
+                                                    </div>
+                                                </div>
+                                                <button 
+                                                    onClick={() => setRevealIndex(revealIndex === idx ? null : idx)} 
+                                                    className={`shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${revealIndex === idx ? 'bg-indigo-600 text-white rotate-180' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                                                >
+                                                    <i data-lucide="chevron-down" className="w-6 h-6"></i>
+                                                </button>
+                                            </div>
+
                                             {revealIndex === idx && (
-                                                <div className="space-y-4">
-                                                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200"><p className="text-sm text-slate-600 italic">"{item.erickSaid}"</p></div>
-                                                    <div className="bg-indigo-50 p-4 rounded-2xl border border-indigo-100"><p className="text-sm text-indigo-900 font-bold">{item.reported}</p></div>
+                                                <div className="mt-6 space-y-4 animate-in slide-in-from-top-4 duration-300">
+                                                    <div className="p-4 bg-slate-50 rounded-2xl border-l-4 border-slate-300">
+                                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Original Answer</p>
+                                                        <p className="text-sm text-slate-500 leading-relaxed italic">"{item.erickSaid}"</p>
+                                                    </div>
+                                                    <div className="p-5 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200">
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <i data-lucide="message-square" className="w-4 h-4 text-indigo-200"></i>
+                                                            <p className="text-[10px] font-black text-indigo-200 uppercase tracking-widest">Reported Narrative</p>
+                                                        </div>
+                                                        <p className="text-sm font-medium leading-relaxed">{item.reported}</p>
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>
                                     ))}
                                 </div>
                             </div>
-                            <div className="bg-emerald-600 p-8 rounded-3xl text-white shadow-xl">
-                                <h3 className="text-2xl font-black mb-2">Hiring Decision</h3>
-                                <p className="text-emerald-50 leading-relaxed">Erick's interview was impressive. He explained his experience and values clearly, so we have officially offered him the position.</p>
-                            </div>
                         </div>
                     )}
-                    <footer className="mt-12 text-gray-400 text-xs font-medium uppercase text-center">Interview Practice &bull; 2024</footer>
+                    
+                    <footer className="mt-20 text-slate-400 text-[10px] font-black uppercase tracking-[0.4em] text-center pb-12">
+                        Jonathan Dev &bull; Professional Administrative Assessment &bull; 2024
+                    </footer>
                 </div>
             );
         };
